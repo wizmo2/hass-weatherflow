@@ -52,21 +52,22 @@ async def async_setup_entry(
 
     entities = []
     for description in BINARY_SENSOR_TYPES:
-        entities.append(
-            WeatherFlowBinarySensor(
-                weatherflowapi,
-                coordinator,
-                forecast_coordinator,
-                station_data,
-                description,
-                entry,
+         if coordinator.data and getattr(coordinator.data, description.key) is not None:
+            entities.append(
+                WeatherFlowBinarySensor(
+                    weatherflowapi,
+                    coordinator,
+                    forecast_coordinator,
+                    station_data,
+                    description,
+                    entry,
+                )
             )
-        )
 
-        _LOGGER.debug(
-            "Adding binary sensor entity %s",
-            description.name,
-        )
+            _LOGGER.debug(
+                "Adding binary sensor entity %s",
+                description.name,
+            )
 
     async_add_entities(entities)
 
