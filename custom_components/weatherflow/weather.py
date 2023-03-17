@@ -133,7 +133,7 @@ class WeatherFlowWeatherEntity(WeatherFlowEntity, WeatherEntity):
     @property
     def native_temperature(self):
         """Return the temperature."""
-        return getattr(self.coordinator.data, "air_temperature")
+        return getattr(self.forecast_coordinator.data, "air_temperature")
 
     @property
     def native_temperature_unit(self):
@@ -143,33 +143,37 @@ class WeatherFlowWeatherEntity(WeatherFlowEntity, WeatherEntity):
     @property
     def humidity(self):
         """Return the humidity."""
-        return getattr(self.coordinator.data, "relative_humidity")
+        return getattr(self.forecast_coordinator.data, "relative_humidity")
 
     @property
     def native_pressure(self):
         """Return the pressure."""
-        return getattr(self.coordinator.data, "sea_level_pressure")
+        return getattr(self.forecast_coordinator.data, "sea_level_pressure")
 
     @property
     def native_wind_speed(self):
         """Return the wind speed."""
-        if getattr(self.coordinator.data, "wind_avg") is None:
+        if getattr(self.forecast_coordinator.data, "wind_avg") is None:
             return None
 
         if self._is_metric:
-            return int(round(getattr(self.coordinator.data, "wind_avg") * 3.6))
+            return int(round(getattr(self.forecast_coordinator.data, "wind_avg") * 3.6))
 
-        return int(round(getattr(self.coordinator.data, "wind_avg")))
+        return int(round(getattr(self.forecast_coordinator.data, "wind_avg")))
 
     @property
     def wind_bearing(self):
         """Return the wind bearing."""
-        return getattr(self.coordinator.data, "wind_direction")
+        return getattr(self.forecast_coordinator.data, "wind_direction")
 
     @property
     def native_visibility(self):
         """Return the visibility."""
-        return getattr(self.coordinator.data, "visibility")
+        return (
+            getattr(self.coordinator.data, "visibility")
+            if self.coordinator.data
+            else None
+        )
 
     @property
     def forecast(self) -> list[Forecast] | None:
