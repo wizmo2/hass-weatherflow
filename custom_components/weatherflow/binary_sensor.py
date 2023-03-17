@@ -32,6 +32,11 @@ BINARY_SENSOR_TYPES: tuple[BinarySensorEntityDescription, ...] = (
         name="Is Lightning",
         icon="mdi:flash-alert",
     ),
+    BinarySensorEntityDescription(
+        key="is_forecast_freezing",
+        name="Is Forecast Freezing",
+        icon="mdi:snowflake-alert",
+    ),
 )
 
 
@@ -95,4 +100,8 @@ class WeatherFlowBinarySensor(WeatherFlowEntity, BinarySensorEntity):
     @property
     def is_on(self):
         """Returns state of the sensor."""
-        return getattr(self.coordinator.data, self.entity_description.key)
+        return (
+            getattr(self.coordinator.data, self.entity_description.key)
+            if self.coordinator.data
+            else None
+        )

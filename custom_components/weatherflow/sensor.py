@@ -578,7 +578,7 @@ async def async_setup_entry(
         if (
             description.tempest_sensor is None
             or description.tempest_sensor is station_data.is_tempest
-        ) and getattr(coordinator.data, description.key) is not None:
+        ) and coordinator.data and getattr(coordinator.data, description.key) is not None:
             entities.append(
                 WeatherFlowSensor(
                     weatherflowapi,
@@ -643,7 +643,7 @@ class WeatherFlowSensor(WeatherFlowEntity, SensorEntity):
     @property
     def extra_state_attributes(self):
         """Return the sensor state attributes."""
-        if self.entity_description.key == "battery_mode":
+        if self.coordinator.data and self.entity_description.key == "battery_mode":
             return {
                 **super().extra_state_attributes,
                 ATTR_DESCRIPTION: getattr(
